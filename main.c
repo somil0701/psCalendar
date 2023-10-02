@@ -13,56 +13,22 @@ void repeatChar(char character, int count)
     }
 }
 
-// Function to get the Starting Day of a Month(i.e. Mon, Tue)
-
-int getFirstDayOfMonth(int month)
-{
-    int total_num_of_days = 0;
-    for (int temp_month = 1; temp_month < month; temp_month++)
-    {
-        if (temp_month < 7)
-        {
-            if (temp_month == 2)
-            {
-                total_num_of_days += 29;
-            }
-            else if (temp_month % 2 == 0)
-            {
-                total_num_of_days += 30;
-            }
-            else
-                total_num_of_days += 31;
-        }
-        else
-        {
-            if (temp_month == 7)
-                total_num_of_days += 31;
-
-            else if (temp_month % 2 == 0)
-                total_num_of_days += 31;
-
-            else
-                total_num_of_days += 30;
-        }
-    }
-
-    return (total_num_of_days % 7);
+int isLeapYear(int year) {
+    if (year % 4 == 0 && year % 100 != 0)
+        return 1;
+    else
+        return 0;
 }
 
-// Function to Generate the Calendar
+int getNumberOfDaysInMonth(int month, int year) {
+    int numberOfDays;
 
-void drawCal(int date, int month, int year)
-{
-    int numberOfDays, FirstDayOfMonth = getFirstDayOfMonth(month);
-
-    printf("Su Mo Tu We Th Fr Sa\n");
-    repeatChar(' ', FirstDayOfMonth * 3);
     if (month < 7)
     {
         if (month % 2 == 0)
         {
             if (month == 2)
-                numberOfDays = 29;
+                numberOfDays = isLeapYear(year) ? 29 : 28;
             else
                 numberOfDays = 30;
         }
@@ -86,8 +52,28 @@ void drawCal(int date, int month, int year)
             numberOfDays = 30;
         }
     }
+    return numberOfDays;
+}
 
-    for (int currentDate = 1, currentDay = FirstDayOfMonth; currentDate <= numberOfDays; currentDate++)
+// Function to get the Starting Day of a Month(i.e. Mon, Tue)
+int getfirstDayOfMonth(int month, int year)
+{
+    int total_num_of_days = 0;
+    for (int temp_month = 1; temp_month < month; temp_month++)
+        total_num_of_days += getNumberOfDaysInMonth(temp_month, year);
+
+    return (total_num_of_days % 7);
+}
+
+// Function to Generate the Calendar
+void drawCal(int date, int month, int year)
+{
+    int numberOfDays = getNumberOfDaysInMonth(month, year), firstDayOfMonth = getfirstDayOfMonth(month, year);
+
+    printf("Su Mo Tu We Th Fr Sa\n");
+    repeatChar(' ', firstDayOfMonth * 3);
+
+    for (int currentDate = 1, currentDay = firstDayOfMonth; currentDate <= numberOfDays; currentDate++)
     {
         if (currentDate < 10)
             printf("0");
@@ -103,6 +89,7 @@ void drawCal(int date, int month, int year)
     printf("\n");
 }
 
+
 int main()
 {
     // Declarations
@@ -115,7 +102,7 @@ int main()
     scanf("%d", &month);
     printf("Enter the Year: ");
     scanf("%d", &year);
-
+    
     drawCal(day, month, year);
 
     return 0;
