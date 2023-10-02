@@ -1,4 +1,10 @@
-// Calendar 2012 OR 8 AD
+/*
+=== The Great Calendar Crisis ===
+=== The Great Solar System Crisis ===
+Discovered that September 1752 had 11
+entire days missing from the calendar 💀
+=================================
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,17 +19,37 @@ void repeatChar(char character, int count)
     }
 }
 
-int isLeapYear(int year) {
-    if (year % 4 == 0 && year % 100 != 0)
-        return 1;
+int isLeapYear(int year)
+{
+    if (year % 4 == 0)
+    {
+        if (year % 100 == 0 && year > 1799)
+        {
+            if (year % 400 == 0)
+                return 1;
+            else
+                return 0;
+        }
+        else
+            return 1;
+    }
     else
+    {
         return 0;
+    }
 }
 
-int getNumberOfDaysInMonth(int month, int year) {
+int getNumberOfDaysInMonth(int month, int year)
+{
     int numberOfDays;
+    month = month - 12 * (year - 1);
 
-    if (month < 7)
+    if (year == 1752 && month == 9)
+    {
+        return 19;
+    }
+
+    if (month <= 7)
     {
         if (month % 2 == 0)
         {
@@ -32,25 +58,17 @@ int getNumberOfDaysInMonth(int month, int year) {
             else
                 numberOfDays = 30;
         }
-        if (month % 2 == 1)
+        else
         {
             numberOfDays = 31;
         }
     }
     else
     {
-        if (month == 7)
-        {
+        if (month % 2 == 0)
             numberOfDays = 31;
-        }
-        else if (month % 2 == 0)
-        {
-            numberOfDays = 31;
-        }
         else
-        {
             numberOfDays = 30;
-        }
     }
     return numberOfDays;
 }
@@ -58,17 +76,21 @@ int getNumberOfDaysInMonth(int month, int year) {
 // Function to get the Starting Day of a Month(i.e. Mon, Tue)
 int getfirstDayOfMonth(int month, int year)
 {
-    int total_num_of_days = 0;
-    for (int temp_month = 1; temp_month < month; temp_month++)
-        total_num_of_days += getNumberOfDaysInMonth(temp_month, year);
+    int totalNumberOfDays = 6;
+    for (int temp_month = 1, temp_year = 1; temp_month < ((year - 1) * 12) + month; temp_month++)
+    {
+        totalNumberOfDays += getNumberOfDaysInMonth(temp_month, temp_year);
+        if (temp_month % 12 == 0)
+            temp_year++;
+    }
 
-    return (total_num_of_days % 7);
+    return (totalNumberOfDays % 7);
 }
 
 // Function to Generate the Calendar
 void drawCal(int date, int month, int year)
 {
-    int numberOfDays = getNumberOfDaysInMonth(month, year), firstDayOfMonth = getfirstDayOfMonth(month, year);
+    int numberOfDays = getNumberOfDaysInMonth(month + (year - 1) * 12, year), firstDayOfMonth = getfirstDayOfMonth(month, year);
 
     printf("Su Mo Tu We Th Fr Sa\n");
     repeatChar(' ', firstDayOfMonth * 3);
@@ -89,7 +111,6 @@ void drawCal(int date, int month, int year)
     printf("\n");
 }
 
-
 int main()
 {
     // Declarations
@@ -102,7 +123,7 @@ int main()
     scanf("%d", &month);
     printf("Enter the Year: ");
     scanf("%d", &year);
-    
+
     drawCal(day, month, year);
 
     return 0;
